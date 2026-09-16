@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Surprise For You! 🎂✨</title>
+  
+  <!-- Google Fonts: Poppins & Pacifico -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ==========================================
+       RESET & GLOBAL STYLES
+    =========================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --bg-dark: #120309;
+      --bg-maroon: #260714;
+      --bg-card: rgba(45, 10, 26, 0.75);
+      --neon-pink: #ff2a85;
+      --neon-glow: rgba(255, 42, 133, 0.6);
+      --soft-pink: #ffb3d1;
+      --magenta: #d8006f;
+      --text-white: #ffffff;
+      --border-neon: rgba(255, 42, 133, 0.4);
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      overflow-y: hidden; /* Strict viewport height fitting without page scrolling */
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-dark);
+      background-image: radial-gradient(circle at center, #2e071a 0%, #120309 100%);
+      color: var(--text-white);
+    }
+
+    /* Typography */
+    .handwritten-title {
+      font-family: 'Pacifico', cursive;
+      color: #ffffff;
+      font-size: 2.2rem;
+      line-height: 1.3;
+      margin-bottom: 15px;
+      font-weight: 400;
+    }
+
+    .glow-text {
+      text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+    }
+
+    .subtitle {
+      color: var(--soft-pink);
+      font-size: 1rem;
+      margin-bottom: 25px;
+      font-weight: 300;
+    }
+
+    /* ==========================================
+       PERSISTENT MUSIC CONTROL BUTTON
+    =========================================== */
+    .music-toggle-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 1000;
+      background: rgba(20, 5, 12, 0.85);
+      border: 1px solid var(--neon-pink);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--neon-glow);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .music-toggle-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px var(--neon-pink);
+    }
+
+    /* ==========================================
+       FLOATING HEARTS CONTAINER
+    =========================================== */
+    .floating-hearts-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none; /* Prevents interaction/scrolling interference */
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    .floating-heart {
+      position: absolute;
+      bottom: -40px;
+      font-size: 1.2rem;
+      animation: floatUp 6s linear forwards;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.8) rotate(0deg);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.2) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* ==========================================
+       MAIN APP & SCREEN TRANSITIONS
+    =========================================== */
+    .app-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .screen {
+      display: none;
+      width: 100%;
+      max-width: 550px;
+      height: 100%;
+      max-height: 100vh;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .screen.active {
+      display: flex;
+      animation: fadeInScreen 0.5s ease-in-out forwards;
+    }
+
+    @keyframes fadeInScreen {
+      from {
+        opacity: 0;
+        transform: scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* ==========================================
+       GLASSMORPHISM CARD STYLES
+    =========================================== */
+    .card {
+      width: 100%;
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-neon);
+      border-radius: 24px;
+      padding: 30px 20px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 42, 133, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      max-height: 92vh;
+      overflow-y: auto; /* Internal card scroll only if required on small screens */
+    }
+
+    .max-width-card {
+      max-width: 600px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    /* ==========================================
+       BUTTONS
+    =========================================== */
+    .btn {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 12px 28px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+      outline: none;
+    }
+
+    .btn-neon {
+      background: linear-gradient(135deg, var(--neon-pink), var(--magenta));
+      color: #fff;
+      box-shadow: 0 0 15px var(--neon-glow);
+    }
+
+    .btn-neon:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 0 25px var(--neon-pink);
+    }
+
+    .btn-neon:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+      filter: grayscale(80%);
+    }
+
+    /* ==========================================
+       SCREEN 1: GIFT SPECIFIC
+    =========================================== */
+    .sparkles-header {
+      font-size: 1.5rem;
+      color: var(--soft-pink);
+      margin-bottom: 10px;
+      letter-spacing: 5px;
+    }
+
+    .gift-box {
+      font-size: 5rem;
+      margin: 15px 0;
+      cursor: pointer;
+      display: inline-block;
+      animation: floatGift 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 15px var(--neon-pink));
+      transition: transform 0.2s;
+    }
+
+    .gift-box:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes floatGift {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(3deg); }
+    }
+
+    /* ==========================================
+       SCREEN 2: CLOCK & SECRET CODE
+    =========================================== */
+    .clock-box {
+      background: rgba(18, 3, 9, 0.7);
+      border: 1px solid var(--neon-pink);
+      padding: 10px 25px;
+      border-radius: 15px;
+      margin: 10px 0 15px 0;
+      box-shadow: 0 0 10px var(--neon-glow);
+    }
+
+    .clock-display {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 2px;
+    }
+
+    .code-banner {
+      background: linear-gradient(90deg, rgba(255, 42, 133, 0.2), rgba(216, 0, 111, 0.2));
+      border: 1px dashed var(--neon-pink);
+      padding: 10px 20px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .code-label {
+      font-size: 0.85rem;
+      color: var(--soft-pink);
+      margin-bottom: 3px;
+    }
+
+    .code-value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: #fff;
+      text-shadow: 0 0 8px var(--neon-pink);
+    }
+
+    .instruction-text {
+      font-size: 0.9rem;
+      color: #ddd;
+      margin-bottom: 15px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 25px;
+      border: 1px solid var(--neon-pink);
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      text-align: center;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      outline: none;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+    }
+
+    .input-group input:focus {
+      box-shadow: 0 0 10px var(--neon-pink);
+    }
+
+    .feedback-msg {
+      font-size: 0.9rem;
+      margin-top: 12px;
+      font-weight: 500;
+    }
+
+    .error-msg { color: #ff6b6b; }
+    .success-msg { color: #51cf66; }
+    .info-msg { color: var(--soft-pink); }
+    .hidden { display: none !important; }
+
+    /* ==========================================
+       SCREEN 3 & 4: MESSAGE & STATS
+    =========================================== */
+    .decoration-hearts {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .message-box {
+      margin: 15px 0 25px 0;
+      line-height: 1.6;
+    }
+
+    .message-p {
+      font-size: 1.1rem;
+      color: #f1f1f1;
+    }
+
+    .cake-emoji-large {
+      font-size: 4rem;
+      margin: 5px 0 15px 0;
+      filter: drop-shadow(0 0 10px var(--neon-pink));
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: 100%;
+      margin: 15px 0 20px 0;
+    }
+
+    .stat-card {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-neon);
+      padding: 12px 8px;
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-number {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: #ccc;
+      margin-top: 4px;
+    }
+
+    .highlight-text {
+      font-size: 1rem;
+      color: var(--soft-pink);
+      margin-bottom: 10px;
+    }
+
+    /* ==========================================
+       SCREEN 5: BIRTHDAY TRUTHS
+    =========================================== */
+    .truths-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      margin: 15px 0;
+    }
+
+    .truth-card {
+      background: rgba(0, 0, 0, 0.35);
+      border-left: 3px solid var(--neon-pink);
+      padding: 10px 14px;
+      border-radius: 8px;
+      text-align: left;
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+
+    .emotional-note {
+      margin: 15px 0 10px 0;
+      padding: 12px;
+      background: rgba(255, 42, 133, 0.1);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 42, 133, 0.3);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #fff;
+    }
+
+    /* ==========================================
+       SCREEN 6: POP THE WISHES (3x2 GRID)
+    =========================================== */
+    .balloon-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* Strict 3-column layout */
+      gap: 15px;
+      width: 100%;
+      margin: 20px 0;
+    }
+
+    .balloon-wrapper {
+      aspect-ratio: 1 / 1;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-neon);
+      border-radius: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      cursor: pointer;
+      padding: 5px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .balloon-wrapper:hover {
+      transform: translateY(-3px);
+      border-color: var(--neon-pink);
+    }
+
+    .balloon {
+      font-size: 2.8rem;
+      filter: drop-shadow(0 0 8px var(--neon-pink));
+      animation: floatBalloon 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatBalloon {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-6px); }
+    }
+
+    .balloon-popped .balloon {
+      animation: popAnim 0.3s forwards;
+    }
+
+    @keyframes popAnim {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.5; }
+      100% { transform: scale(0); opacity: 0; display: none; }
+    }
+
+    .wish-reveal {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #fff;
+      text-shadow: 0 0 5px var(--neon-pink);
+      animation: fadeIn 0.4s ease forwards;
+      padding: 4px;
+      line-height: 1.2;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* ==========================================
+       SCREEN 7: CAKE PUZZLE (4-BLOCK ADJACENT SWAP)
+    =========================================== */
+    .puzzle-board {
+      width: 260px;
+      height: 260px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 6px;
+      background: var(--bg-dark);
+      padding: 6px;
+      border-radius: 16px;
+      border: 2px solid var(--neon-pink);
+      box-shadow: 0 0 20px var(--neon-glow);
+      margin: 15px 0;
+    }
+
+    .puzzle-piece {
+      width: 100%;
+      height: 100%;
+      background-image: url('images/puzzle.jpg');
+      background-size: 200% 200%; /* 2x2 grid quarter visualization */
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
+      box-sizing: border-box;
+    }
+
+    .puzzle-piece.selected {
+      outline: 3px solid #ffffff;
+      box-shadow: 0 0 15px #ffffff, 0 0 25px var(--neon-pink);
+      transform: scale(0.96);
+    }
+
+    /* ==========================================
+       SCREEN 8: ONE LAST SURPRISE
+    =========================================== */
+    .glowing-card {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--neon-pink);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 15px 0;
+      box-shadow: inset 0 0 15px var(--neon-glow);
+    }
+
+    .prompt-text {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .prompt-subtext {
+      font-size: 0.9rem;
+      color: var(--soft-pink);
+      margin-bottom: 10px;
+    }
+
+    .revealed-box {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px dashed var(--border-neon);
+      animation: fadeIn 0.5s ease;
+    }
+
+    .revealed-text {
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #ffffff;
+    }
+
+    /* ==========================================
+       SCREEN 9: LETTER
+    =========================================== */
+    .letter-card {
+      background: rgba(20, 4, 12, 0.85);
+      border: 1px solid var(--border-neon);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: left;
+      margin: 15px 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .letter-salutation {
+      font-family: 'Pacifico', cursive;
+      font-size: 1.5rem;
+      color: var(--soft-pink);
+      margin-bottom: 12px;
+    }
+
+    .letter-body {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #eaeaea;
+    }
+
+    /* ==========================================
+       SCREEN 10: FINAL SCREEN
+    =========================================== */
+    .final-sparkles {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .final-heading {
+      font-size: 1.2rem;
+      color: var(--soft-pink);
+      margin-bottom: 20px;
+    }
+
+    .credits-box {
+      font-size: 0.85rem;
+      color: #ccc;
+      margin-bottom: 20px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px 15px;
+      border-radius: 20px;
+    }
+
+    /* ==========================================
+       RESPONSIVE ADJUSTMENTS
+    =========================================== */
+    @media (max-width: 480px) {
+      .card {
+        padding: 20px 15px;
+      }
+
+      .handwritten-title {
+        font-size: 1.8rem;
+      }
+
+      .balloon-grid {
+        gap: 8px;
+      }
+
+      .balloon {
+        font-size: 2.2rem;
+      }
+
+      .wish-reveal {
+        font-size: 0.72rem;
+      }
+
+      .puzzle-board {
+        width: 220px;
+        height: 220px;
+      }
+
+      .stat-number {
+        font-size: 1.2rem;
+      }
+
+      .stat-label {
+        font-size: 0.68rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Audio -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="music/birthday.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Persistent Music Controls -->
+  <button id="musicToggleBtn" class="music-toggle-btn" aria-label="Toggle Music">
+    <span id="musicIcon">🎵</span> <span id="musicText">Music ON</span>
+  </button>
+
+  <!-- Container for Dynamic Floating Hearts -->
+  <div id="floatingHeartsContainer" class="floating-hearts-container"></div>
+
+  <!-- MAIN APPLICATION CONTAINER -->
+  <main class="app-container">
+
+    <!-- ==========================================
+         SCREEN 1: GIFT OPENING
+    =========================================== -->
+    <section id="screen1" class="screen active">
+      <div class="card glass-card text-center">
+        <div class="sparkles-header">✦ ✧ ✦</div>
+        
+        <div id="giftBox" class="gift-box" role="button" aria-label="Open Gift">
+          🎁
+        </div>
+
+        <h1 class="handwritten-title glow-text">A surprise<br>awaits you...</h1>
+        <p class="subtitle">✨ Something special just for you ✨</p>
+
+        <button id="openGiftBtn" class="btn btn-neon">Tap the gift to open 🎁</button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 2: LOADING / CLOCK / SECRET CODE
+    =========================================== -->
+    <section id="screen2" class="screen">
+      <div class="card glass-card text-center">
+        <h2 class="handwritten-title">Preparing your surprise...</h2>
+        
+        <!-- Real-Time Clock -->
+        <div class="clock-box">
+          <div id="realtimeClock" class="clock-display">00:00:00 AM</div>
+        </div>
+
+        <!-- Secret Code Display (Positioned DIRECTLY below clock) -->
+        <div class="code-banner">
+          <p class="code-label">🔐 Your Secret Code</p>
+          <div class="code-value">HAPPY2026</div>
+        </div>
+
+        <p class="instruction-text">Enter the code below to unlock your surprise 💗</p>
+
+        <div class="input-group">
+          <input type="text" id="codeInput" placeholder="Enter code" autocomplete="off" spellcheck="false">
+          <button id="unlockBtn" class="btn btn-neon">Unlock 🎁</button>
+        </div>
+
+        <p id="codeError" class="feedback-msg error-msg hidden">Oops! That's not the secret code 💗 Try again!</p>
+        <p id="codeSuccess" class="feedback-msg success-msg hidden">Correct! Your surprise is ready! 🎉</p>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 3: SPECIAL MESSAGE
+    =========================================== -->
+    <section id="screen3" class="screen">
+      <div class="card glass-card text-center">
+        <div class="decoration-hearts">💖 ✨ 💖</div>
+        <h2 class="handwritten-title glow-text">There's something special<br>I want to tell you...</h2>
+        
+        <div class="message-box">
+          <p class="message-p">
+            Some people make ordinary days feel special.<br>
+            Today is all about celebrating you. 💗
+          </p>
+        </div>
+
+        <button id="continueToBirthdayBtn" class="btn btn-neon">Continue ✨</button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 4: HAPPY BIRTHDAY
+    =========================================== -->
+    <section id="screen4" class="screen">
+      <div class="card glass-card text-center">
+        <h1 class="handwritten-title glow-text">Happy Birthday! 🎂</h1>
+        
+        <div class="cake-emoji-large">🎂</div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-number">365</span>
+            <span class="stat-label">Days in a year</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">24</span>
+            <span class="stat-label">Hours in a day</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">1</span>
+            <span class="stat-label">Amazing person</span>
+          </div>
+        </div>
+
+        <p class="highlight-text">Today is your special day! ✨</p>
+
+        <button id="continueToTruthsBtn" class="btn btn-neon">Continue 💗</button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 5: FUNNY + EMOTIONAL BIRTHDAY TRUTHS
+    =========================================== -->
+    <section id="screen5" class="screen">
+      <div class="card glass-card text-center max-width-card">
+        <h2 class="handwritten-title glow-text">Some Birthday Truths 💗</h2>
+        <p class="subtitle">(Okay... Let's Be Honest 😂)</p>
+
+        <div class="truths-container">
+          <div class="truth-card">
+            <p>You're officially one year more experienced at pretending you know what you're doing 😂</p>
+          </div>
+          <div class="truth-card">
+            <p>Growing older is mandatory.<br>Growing up is optional. 😌</p>
+          </div>
+          <div class="truth-card">
+            <p>May your cake be bigger than your problems. 🎂</p>
+          </div>
+          <div class="truth-card">
+            <p>Life is better with people who can make you laugh for absolutely no reason.</p>
+          </div>
+        </div>
+
+        <div class="emotional-note">
+          <p>
+            Jokes aside, I hope this year brings you beautiful memories,
+            peace, happiness, success, and lots of reasons to smile. 💗
+          </p>
+        </div>
+
+        <button id="continueToWishesBtn" class="btn btn-neon">Continue 💕</button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 6: POP THE WISHES (3x2 BALLOON GRID)
+    =========================================== -->
+    <section id="screen6" class="screen">
+      <div class="card glass-card text-center max-width-card">
+        <h2 class="handwritten-title glow-text">Pop the Wishes 🎈</h2>
+        <p class="subtitle">Pop all the balloons to reveal your wishes!</p>
+
+        <!-- 3x2 Balloon Grid -->
+        <div id="balloonGrid" class="balloon-grid">
+          <!-- Item 1 -->
+          <div class="balloon-wrapper" data-index="0">
+            <div class="balloon">🎈</div>
+            <div class="wish-reveal hidden">More happiness! 💗</div>
+          </div>
+          <!-- Item 2 -->
+          <div class="balloon-wrapper" data-index="1">
+            <div class="balloon">🎈</div>
+            <div class="wish-reveal hidden">More adventures! ✨</div>
+          </div>
+          <!-- Item 3 -->
+          <div class="balloon-wrapper" data-index="2">
+            <div class="balloon">🎈</div>
+            <div class="wish-reveal hidden">More laughter! 😂</div>
+          </div>
+          <!-- Item 4 -->
+          <div class="balloon-wrapper" data-index="3">
+            <div class="balloon">🎈</div>
+            <div class="wish-reveal hidden">More success! 🌟</div>
+          </div>
+          <!-- Item 5 -->
+          <div class="balloon-wrapper" data-index="4">
+            <div class="balloon">🎈</div>
+            <div class="wish-reveal hidden">More beautiful memories! 💕</div>
+          </div>
+          <!-- Item 6 -->
+          <div class="balloon-wrapper" data-index="5">
+            <div class="balloon">🎈</div>
+            <div class="wish-reveal hidden">More reasons to smile! 😊</div>
+          </div>
+        </div>
+
+        <p id="balloonSuccessMsg" class="feedback-msg success-msg hidden">🎉 You found all the wishes! 🎉</p>
+
+        <button id="continueToPuzzleBtn" class="btn btn-neon" disabled>Continue ✨</button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 7: BIRTHDAY CAKE PUZZLE (4-BLOCK SWAP)
+    =========================================== -->
+    <section id="screen7" class="screen">
+      <div class="card glass-card text-center">
+        <h2 class="handwritten-title glow-text">Birthday Cake Puzzle 🎂</h2>
+        <p class="subtitle">Click a piece, then click an adjacent piece to swap them.</p>
+
+        <!-- Puzzle Frame (2x2 Grid) -->
+        <div id="puzzleBoard" class="puzzle-board">
+          <div class="puzzle-piece" data-pos="0"></div>
+          <div class="puzzle-piece" data-pos="1"></div>
+          <div class="puzzle-piece" data-pos="2"></div>
+          <div class="puzzle-piece" data-pos="3"></div>
+        </div>
+
+        <p id="puzzleInstruction" class="feedback-msg info-msg">Select a piece to begin swapping 💗</p>
+        <p id="puzzleSuccessMsg" class="feedback-msg success-msg hidden">🎉 You solved it!<br>The cake is complete! 🎂💗</p>
+
+        <button id="continueToSurpriseBtn" class="btn btn-neon" disabled>Continue ✨</button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 8: ONE LAST SURPRISE
+    =========================================== -->
+    <section id="screen8" class="screen">
+      <div class="card glass-card text-center">
+        <h2 class="handwritten-title glow-text">One Last Surprise ✨</h2>
+        
+        <div class="glowing-card">
+          <p class="prompt-text">Are you ready?</p>
+          <p class="prompt-subtext">There's one more thing...</p>
+          
+          <button id="revealSurpriseBtn" class="btn btn-neon">Reveal It 💗</button>
+
+          <div id="revealedContent" class="revealed-box hidden">
+            <p class="revealed-text">
+              Out of all the things that could make today special,<br>
+              the best part is simply celebrating YOU. 💗
+            </p>
+          </div>
+        </div>
+
+        <button id="continueToLetterBtn" class="btn btn-neon hidden">Continue ✨</button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 9: A LETTER JUST FOR YOU
+    =========================================== -->
+    <section id="screen9" class="screen">
+      <div class="card glass-card text-center max-width-card">
+        <h2 class="handwritten-title glow-text">A Letter Just For You 💌</h2>
+
+        <div class="letter-card">
+          <h3 class="letter-salutation">Dear You,</h3>
+          <p class="letter-body">
+            Today isn't just another day on the calendar.<br><br>
+            It's a reminder of how special it is to have someone who can bring
+            laughter, kindness and good memories into the lives of others.<br><br>
+            I hope this new year of your life brings you happiness,
+            success, peace, confidence and countless moments worth remembering.<br><br>
+            Keep smiling.<br>
+            Keep being yourself.<br>
+            And never forget that you deserve good things.<br><br>
+            <strong>Happy Birthday! 🎂💗</strong>
+          </p>
+        </div>
+
+        <button id="continueToFinalBtn" class="btn btn-neon">Continue ✨</button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 10: FINAL THANK YOU & REPLAY
+    =========================================== -->
+    <section id="screen10" class="screen">
+      <div class="card glass-card text-center">
+        <div class="final-sparkles">✨ 💖 🎂 💖 ✨</div>
+        <h1 class="handwritten-title glow-text">Thank You For Being You! 💗</h1>
+        <p class="final-heading">Happy Birthday once again! 🎂✨</p>
+
+        <div class="credits-box">
+          <p>Made with lots of wishes, smiles and a little bit of code. 💻💗</p>
+        </div>
+
+        <button id="replayBtn" class="btn btn-neon">Replay Surprise 🔄</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      /* ==========================================
+         STATE MANAGEMENT & GLOBAL VARIABLES
+      =========================================== */
+      const SECRET_CODE = "HAPPY2026";
+      
+      // Background Positions for 4 quarters (2x2 grid)
+      const piecePositions = [
+        "0% 0%",    // Piece 1: Top-Left
+        "100% 0%",  // Piece 2: Top-Right
+        "0% 100%",  // Piece 3: Bottom-Left
+        "100% 100%" // Piece 4: Bottom-Right
+      ];
+
+      // Puzzle State: indices representing current order of pieces
+      let currentPuzzleState = [0, 1, 2, 3];
+      let selectedPieceIndex = null;
+      let poppedBalloonsCount = 0;
+      let isMuted = false;
+      let clockInterval = null;
+
+      /* ==========================================
+         DOM ELEMENTS
+      =========================================== */
+      const bgMusic = document.getElementById("bgMusic");
+      const musicToggleBtn = document.getElementById("musicToggleBtn");
+      const musicIcon = document.getElementById("musicIcon");
+      const musicText = document.getElementById("musicText");
+      
+      const giftBox = document.getElementById("giftBox");
+      const openGiftBtn = document.getElementById("openGiftBtn");
+
+      const realtimeClock = document.getElementById("realtimeClock");
+      const codeInput = document.getElementById("codeInput");
+      const unlockBtn = document.getElementById("unlockBtn");
+      const codeError = document.getElementById("codeError");
+      const codeSuccess = document.getElementById("codeSuccess");
+
+      const continueToBirthdayBtn = document.getElementById("continueToBirthdayBtn");
+      const continueToTruthsBtn = document.getElementById("continueToTruthsBtn");
+      const continueToWishesBtn = document.getElementById("continueToWishesBtn");
+
+      const balloonWrappers = document.querySelectorAll(".balloon-wrapper");
+      const balloonSuccessMsg = document.getElementById("balloonSuccessMsg");
+      const continueToPuzzleBtn = document.getElementById("continueToPuzzleBtn");
+
+      const puzzlePieces = document.querySelectorAll(".puzzle-piece");
+      const puzzleInstruction = document.getElementById("puzzleInstruction");
+      const puzzleSuccessMsg = document.getElementById("puzzleSuccessMsg");
+      const continueToSurpriseBtn = document.getElementById("continueToSurpriseBtn");
+
+      const revealSurpriseBtn = document.getElementById("revealSurpriseBtn");
+      const revealedContent = document.getElementById("revealedContent");
+      const continueToLetterBtn = document.getElementById("continueToLetterBtn");
+
+      const continueToFinalBtn = document.getElementById("continueToFinalBtn");
+      const replayBtn = document.getElementById("replayBtn");
+
+      /* ==========================================
+         SCREEN TRANSITION SYSTEM
+         (STRICTLY NO SCROLLING UTILITIES USED)
+      =========================================== */
+      function showScreen(screenId) {
+        document.querySelectorAll(".screen").forEach(screen => {
+          screen.classList.remove("active");
+        });
+        const target = document.getElementById(screenId);
+        if (target) {
+          target.classList.add("active");
+        }
+      }
+
+      /* ==========================================
+         MUSIC CONTROL LOGIC
+      =========================================== */
+      function startMusic() {
+        if (bgMusic && bgMusic.paused && !isMuted) {
+          bgMusic.volume = 0.35;
+          bgMusic.play().catch(() => {
+            // Autoplay policy fallback
+          });
+        }
+      }
+
+      function toggleMusic() {
+        if (bgMusic.paused) {
+          bgMusic.play();
+          isMuted = false;
+          musicIcon.textContent = "🎵";
+          musicText.textContent = "Music ON";
+        } else {
+          bgMusic.pause();
+          isMuted = true;
+          musicIcon.textContent = "🔇";
+          musicText.textContent = "Music OFF";
+        }
+      }
+
+      musicToggleBtn.addEventListener("click", toggleMusic);
+
+      /* ==========================================
+         SCREEN 1: GIFT OPENING
+      =========================================== */
+      function handleGiftOpen() {
+        startMusic();
+        showScreen("screen2");
+        startClock();
+      }
+
+      giftBox.addEventListener("click", handleGiftOpen);
+      openGiftBtn.addEventListener("click", handleGiftOpen);
+
+      /* ==========================================
+         SCREEN 2: REAL-TIME CLOCK & SECRET CODE
+      =========================================== */
+      function startClock() {
+        updateClock();
+        if (!clockInterval) {
+          clockInterval = setInterval(updateClock, 1000);
+        }
+      }
+
+      function updateClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // '0' hours becomes '12'
+        const formattedHours = String(hours).padStart(2, '0');
+
+        if (realtimeClock) {
+          realtimeClock.textContent = `${formattedHours}:${minutes}:${seconds} ${ampm}`;
+        }
+      }
+
+      unlockBtn.addEventListener("click", () => {
+        const enteredCode = codeInput.value.trim().toUpperCase();
+        if (enteredCode === SECRET_CODE) {
+          codeError.classList.add("hidden");
+          codeSuccess.classList.remove("hidden");
+          setTimeout(() => {
+            showScreen("screen3");
+          }, 1000);
+        } else {
+          codeSuccess.classList.add("hidden");
+          codeError.classList.remove("hidden");
+        }
+      });
+
+      /* ==========================================
+         SCREEN 3, 4, 5 NAVIGATION
+      =========================================== */
+      continueToBirthdayBtn.addEventListener("click", () => showScreen("screen4"));
+      continueToTruthsBtn.addEventListener("click", () => showScreen("screen5"));
+      continueToWishesBtn.addEventListener("click", () => showScreen("screen6"));
+
+      /* ==========================================
+         SCREEN 6: POP THE WISHES (BALLOONS)
+      =========================================== */
+      balloonWrappers.forEach(wrapper => {
+        wrapper.addEventListener("click", () => {
+          if (wrapper.classList.contains("balloon-popped")) return;
+
+          wrapper.classList.add("balloon-popped");
+          const balloonElem = wrapper.querySelector(".balloon");
+          const wishElem = wrapper.querySelector(".wish-reveal");
+
+          if (balloonElem) balloonElem.style.display = "none";
+          if (wishElem) wishElem.classList.remove("hidden");
+
+          poppedBalloonsCount++;
+
+          if (poppedBalloonsCount === balloonWrappers.length) {
+            balloonSuccessMsg.classList.remove("hidden");
+            continueToPuzzleBtn.disabled = false;
+          }
+        });
+      });
+
+      continueToPuzzleBtn.addEventListener("click", () => {
+        showScreen("screen7");
+        initPuzzle();
+      });
+
+      /* ==========================================
+         SCREEN 7: 4-BLOCK CAKE SWAP PUZZLE
+      =========================================== */
+      // Adjacency matrix for 2x2 grid (Indices: 0=TopLeft, 1=TopRight, 2=BottomLeft, 3=BottomRight)
+      const adjacencyMap = {
+        0: [1, 2],
+        1: [0, 3],
+        2: [0, 3],
+        3: [1, 2]
+      };
+
+      function initPuzzle() {
+        selectedPieceIndex = null;
+        puzzleSuccessMsg.classList.add("hidden");
+        continueToSurpriseBtn.disabled = true;
+        puzzleInstruction.textContent = "Click a piece to select it 💗";
+        puzzleInstruction.className = "feedback-msg info-msg";
+
+        // Perform valid adjacent swaps to guarantee solvability
+        currentPuzzleState = [0, 1, 2, 3];
+        let lastSwapped = -1;
+        const numSwaps = 8;
+
+        for (let i = 0; i < numSwaps; i++) {
+          const emptyCandidates = [0, 1, 2, 3].filter(idx => idx !== lastSwapped);
+          const posA = emptyCandidates[Math.floor(Math.random() * emptyCandidates.length)];
+          const neighbors = adjacencyMap[posA];
+          const posB = neighbors[Math.floor(Math.random() * neighbors.length)];
+
+          // Swap elements in state
+          const temp = currentPuzzleState[posA];
+          currentPuzzleState[posA] = currentPuzzleState[posB];
+          currentPuzzleState[posB] = temp;
+          lastSwapped = posB;
+        }
+
+        // Ensure state is not accidentally solved upon initialization
+        if (isPuzzleSolved()) {
+          const temp = currentPuzzleState[0];
+          currentPuzzleState[0] = currentPuzzleState[1];
+          currentPuzzleState[1] = temp;
+        }
+
+        renderPuzzle();
+      }
+
+      function renderPuzzle() {
+        puzzlePieces.forEach((piece, posIndex) => {
+          const pieceDataVal = currentPuzzleState[posIndex];
+          piece.style.backgroundPosition = piecePositions[pieceDataVal];
+          piece.classList.remove("selected");
+        });
+      }
+
+      function isPuzzleSolved() {
+        return currentPuzzleState.every((val, index) => val === index);
+      }
+
+      puzzlePieces.forEach((piece, clickPosIndex) => {
+        piece.addEventListener("click", () => {
+          if (isPuzzleSolved()) return;
+
+          if (selectedPieceIndex === null) {
+            // FIRST CLICK
+            selectedPieceIndex = clickPosIndex;
+            piece.classList.add("selected");
+            puzzleInstruction.textContent = "Now click an adjacent piece to swap 💗";
+            puzzleInstruction.className = "feedback-msg info-msg";
+          } else if (selectedPieceIndex === clickPosIndex) {
+            // DESELECT ON SECOND CLICK TO SAME PIECE
+            piece.classList.remove("selected");
+            selectedPieceIndex = null;
+            puzzleInstruction.textContent = "Click a piece to select it 💗";
+            puzzleInstruction.className = "feedback-msg info-msg";
+          } else {
+            // SECOND CLICK TO DIFFERENT PIECE
+            const isAdjacent = adjacencyMap[selectedPieceIndex].includes(clickPosIndex);
+
+            if (isAdjacent) {
+              // SWAP
+              const temp = currentPuzzleState[selectedPieceIndex];
+              currentPuzzleState[selectedPieceIndex] = currentPuzzleState[clickPosIndex];
+              currentPuzzleState[clickPosIndex] = temp;
+
+              selectedPieceIndex = null;
+              renderPuzzle();
+
+              if (isPuzzleSolved()) {
+                puzzleInstruction.textContent = "";
+                puzzleSuccessMsg.classList.remove("hidden");
+                continueToSurpriseBtn.disabled = false;
+              } else {
+                puzzleInstruction.textContent = "Great swap! Keep going 💗";
+                puzzleInstruction.className = "feedback-msg info-msg";
+              }
+            } else {
+              // NOT ADJACENT (DIAGONAL)
+              puzzleInstruction.textContent = "Choose an adjacent piece 💗";
+              puzzleInstruction.className = "feedback-msg error-msg";
+            }
+          }
+        });
+      });
+
+      continueToSurpriseBtn.addEventListener("click", () => showScreen("screen8"));
+
+      /* ==========================================
+         SCREEN 8: ONE LAST SURPRISE
+      =========================================== */
+      revealSurpriseBtn.addEventListener("click", () => {
+        revealedContent.classList.remove("hidden");
+        revealSurpriseBtn.classList.add("hidden");
+        continueToLetterBtn.classList.remove("hidden");
+      });
+
+      continueToLetterBtn.addEventListener("click", () => showScreen("screen9"));
+
+      /* ==========================================
+         SCREEN 9 & 10 NAVIGATION & REPLAY
+      =========================================== */
+      continueToFinalBtn.addEventListener("click", () => showScreen("screen10"));
+
+      replayBtn.addEventListener("click", () => {
+        // Reset balloon game
+        poppedBalloonsCount = 0;
+        balloonWrappers.forEach(wrapper => {
+          wrapper.classList.remove("balloon-popped");
+          const balloonElem = wrapper.querySelector(".balloon");
+          const wishElem = wrapper.querySelector(".wish-reveal");
+          if (balloonElem) balloonElem.style.display = "block";
+          if (wishElem) wishElem.classList.add("hidden");
+        });
+        balloonSuccessMsg.classList.add("hidden");
+        continueToPuzzleBtn.disabled = true;
+
+        // Reset code input
+        codeInput.value = "";
+        codeError.classList.add("hidden");
+        codeSuccess.classList.add("hidden");
+
+        // Reset screen 8 surprise
+        revealedContent.classList.add("hidden");
+        revealSurpriseBtn.classList.remove("hidden");
+        continueToLetterBtn.classList.add("hidden");
+
+        // Show initial screen without restarting music
+        showScreen("screen1");
+      });
+
+      /* ==========================================
+         FLOATING HEARTS GENERATOR
+      =========================================== */
+      const heartsContainer = document.getElementById("floatingHeartsContainer");
+      const heartSymbols = ["💗", "💕", "♥", "✨"];
+
+      function createFloatingHeart() {
+        if (!heartsContainer) return;
+
+        const heart = document.createElement("div");
+        heart.className = "floating-heart";
+        heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+        heart.style.left = Math.random() * 95 + "vw";
+        heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
+
+        heartsContainer.appendChild(heart);
+
+        setTimeout(() => {
+          heart.remove();
+        }, 7000);
+      }
+
+      setInterval(createFloatingHeart, 1200);
+    });
+  </script>
+</body>
+</html>
